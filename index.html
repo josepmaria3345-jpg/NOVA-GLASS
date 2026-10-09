@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="NOVA GLASS — espai personal per al Chromebook">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>NOVA GLASS</title>
+<style>
+:root{--accent:#50bfff;--accent-rgb:80,191,255;--ink:#f5f8ff;--muted:#b7c5d9;--glass:rgba(7,14,28,.42);--line:rgba(255,255,255,.18);--blur:24px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+body{min-height:100vh;background:#08111f;overflow-x:hidden}
+.wallpaper{position:fixed;inset:0;z-index:-3;background:linear-gradient(130deg,#07111f,#122b49 45%,#09111f);transition:background .4s ease}
+.wallpaper:before,.wallpaper:after{content:"";position:absolute;inset:0;pointer-events:none}
+.wallpaper:before{background:radial-gradient(ellipse at 18% 22%,rgba(var(--accent-rgb),.42),transparent 35%),radial-gradient(ellipse at 82% 80%,rgba(129,83,255,.22),transparent 36%)}
+.wallpaper:after{background:linear-gradient(180deg,rgba(3,8,18,.05),rgba(3,8,18,.52))}
+.wallpaper[data-wall="aurora"]{background:linear-gradient(145deg,#07111f 5%,#073d48 38%,#25316c 72%,#090f25)}
+.wallpaper[data-wall="sunset"]{background:linear-gradient(145deg,#20113d 0%,#923f68 38%,#ef986b 73%,#311c4b)}
+.wallpaper[data-wall="ice"]{background:linear-gradient(145deg,#dceeff 0%,#7aa8d8 42%,#243c75 100%)}
+.wallpaper[data-wall="ice"]:after{background:linear-gradient(180deg,rgba(9,20,42,.08),rgba(9,20,42,.35))}
+.wallpaper[data-wall="forest"]{background:linear-gradient(145deg,#071e1b,#0d5147 48%,#152d3a 100%)}
+.wallpaper[data-wall="rose"]{background:linear-gradient(145deg,#281224,#773e67 48%,#d28a9e 100%)}
+.wallpaper[data-wall="mono"]{background:linear-gradient(135deg,#090b10,#303846 50%,#080a0e)}
+.wallpaper[data-wall="ocean"]{background:linear-gradient(140deg,#031a31,#075b83 48%,#0d2447)}
+.wallpaper[data-wall="desert"]{background:linear-gradient(140deg,#3c2330,#b96d53 48%,#e8c08a)}
+.grain{position:fixed;inset:0;z-index:-1;opacity:.08;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.shell{width:min(1180px,calc(100% - 34px));margin:0 auto;padding:28px 0 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:46px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:850;letter-spacing:.16em;font-size:1.05rem}
+.logo{width:38px;height:38px;border-radius:13px;border:1px solid rgba(255,255,255,.4);background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(var(--accent-rgb),.18));box-shadow:0 0 30px rgba(var(--accent-rgb),.2);display:grid;place-items:center;color:var(--accent);font-weight:900}
+.top-actions{display:flex;align-items:center;gap:10px}
+.pill,.icon-btn{border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--ink);border-radius:999px;padding:10px 14px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer}
+.icon-btn{width:42px;height:42px;padding:0;font-size:1rem}
+.hero{text-align:center;margin:0 auto 27px;max-width:700px}
+.eyebrow{text-transform:uppercase;letter-spacing:.28em;font-size:.72rem;color:var(--accent);font-weight:750}
+h1{font-size:clamp(2.7rem,8vw,5.6rem);letter-spacing:-.075em;line-height:.98;margin:12px 0 12px;font-weight:850}
+.hero p{color:var(--muted);margin:0;font-size:1rem}
+.clock{font-size:1.05rem;margin-top:18px;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.searchbox{max-width:710px;margin:0 auto 25px;padding:8px;display:flex;gap:8px;align-items:center;border-radius:23px;background:var(--glass);border:1px solid var(--line);box-shadow:0 18px 55px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.15);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur))}
+.searchbox .search-icon{padding-left:13px;color:var(--accent);font-size:1.15rem}
+.searchbox input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:var(--ink);font-size:1rem;padding:13px 3px}
+.searchbox input::placeholder{color:rgba(235,243,255,.58)}
+.searchbox button{background:var(--accent);color:#07111f;border:0;border-radius:15px;padding:13px 18px;font-weight:800;cursor:pointer}
+.content{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:18px;align-items:start}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 18px 55px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.12);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur))}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}
+.panel h2{font-size:.9rem;letter-spacing:.13em;text-transform:uppercase;margin:0}
+.subtle{font-size:.78rem;color:var(--muted)}
+.apps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.app{min-width:0;display:flex;flex-direction:column;align-items:center;gap:9px;text-decoration:none;color:var(--ink);padding:13px 5px;border-radius:18px;border:1px solid transparent;transition:.18s}
+.app:hover{background:rgba(255,255,255,.1);border-color:var(--line);transform:translateY(-2px)}
+.app-icon{width:49px;height:49px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,255,255,.23),rgba(var(--accent-rgb),.1));border:1px solid rgba(255,255,255,.22);font-size:1.2rem;font-weight:800;box-shadow:inset 0 1px rgba(255,255,255,.16)}
+.app span:last-child{font-size:.76rem;color:var(--muted);text-align:center;overflow-wrap:anywhere}
+.right-stack{display:grid;gap:18px}
+.note{width:100%;min-height:105px;resize:vertical;background:rgba(0,0,0,.12);border:1px solid var(--line);border-radius:16px;padding:13px;color:var(--ink);font:inherit;outline:none}
+.note::placeholder{color:var(--muted)}
+.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.swatch{cursor:pointer;border:1px solid rgba(255,255,255,.26);border-radius:13px;height:50px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--sw1),var(--sw2));}
+.swatch:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 55%)}
+.swatch[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:2px}
+.wallpaper-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.wall-option{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);border-radius:14px;padding:10px;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;font:inherit;font-size:.83rem}
+.wall-thumb{width:38px;height:32px;border-radius:9px;flex:none;border:1px solid rgba(255,255,255,.25)}
+.wall-option[aria-pressed="true"]{border-color:var(--accent);background:rgba(var(--accent-rgb),.12)}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{max-width:100%;background:#101b2c;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit}
+footer{text-align:center;color:rgba(235,243,255,.55);font-size:.74rem;margin-top:24px}
+@media(max-width:760px){.content{grid-template-columns:1fr}.topbar{margin-bottom:34px}.apps{grid-template-columns:repeat(4,minmax(0,1fr))}.shell{width:min(100% - 22px,650px)}.panel{padding:17px}}
+@media(max-width:390px){.apps{grid-template-columns:repeat(3,minmax(0,1fr))}.brand{letter-spacing:.1em}.pill{padding:9px 11px}}
+</style>
+</head>
+<body>
+<div class="wallpaper" id="wallpaper" data-wall="aurora"></div><div class="grain"></div>
+<main class="shell">
+<header class="topbar">
+  <div class="brand"><div class="logo">N</div><span>NOVA <span style="color:var(--accent)">GLASS</span></span></div>
+  <div class="top-actions"><button class="pill" id="installBtn" hidden>Instal·la NOVA</button><button class="icon-btn" id="settingsJump" title="Personalitza l'aparença" aria-label="Personalitza l'aparença">⚙</button></div>
+</header>
+<section class="hero">
+  <div class="eyebrow">El teu espai digital</div><h1>Hola de nou.</h1><p>Tot el que necessites, en un sol lloc.</p><div class="clock" id="clock">--:--</div>
+</section>
+<form class="searchbox" id="searchForm"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Cerca al web o escriu una adreça..." autocomplete="off" aria-label="Cerca al web"><button type="submit">Cercar ↗</button></form>
+<section class="content">
+  <div class="panel">
+    <div class="panel-head"><h2>Accés ràpid</h2><span class="subtle">Les teves webs</span></div>
+    <div class="apps">
+      <a class="app" href="https://www.google.com"><span class="app-icon">G</span><span>Google</span></a>
+      <a class="app" href="https://mail.google.com"><span class="app-icon">✉</span><span>Gmail</span></a>
+      <a class="app" href="https://drive.google.com"><span class="app-icon">△</span><span>Drive</span></a>
+      <a class="app" href="https://classroom.google.com"><span class="app-icon">▤</span><span>Classroom</span></a>
+      <a class="app" href="https://calendar.google.com"><span class="app-icon">▦</span><span>Calendar</span></a>
+      <a class="app" href="https://docs.google.com"><span class="app-icon">▧</span><span>Docs</span></a>
+      <a class="app" href="https://www.youtube.com"><span class="app-icon">▶</span><span>YouTube</span></a>
+      <a class="app" href="https://chatgpt.com"><span class="app-icon">✳</span><span>ChatGPT</span></a>
+      <a class="app" href="https://keep.google.com"><span class="app-icon">▣</span><span>Keep</span></a>
+      <a class="app" href="https://www.notion.so"><span class="app-icon">N</span><span>Notion</span></a>
+      <a class="app" href="https://open.spotify.com"><span class="app-icon">♫</span><span>Spotify</span></a>
+      <a class="app" href="https://www.wikipedia.org"><span class="app-icon">W</span><span>Wikipedia</span></a>
+    </div>
+  </div>
+  <div class="right-stack">
+    <section class="panel" id="appearance">
+      <div class="panel-head"><h2>Fons de pantalla</h2><span class="subtle">Tria un ambient</span></div>
+      <div class="wallpaper-list" id="wallpaperList">
+        <button class="wall-option" data-wall="aurora" aria-pressed="true"><span class="wall-thumb" style="background:linear-gradient(135deg,#07111f,#073d48,#25316c)"></span>Aurora</button>
+        <button class="wall-option" data-wall="ocean" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#031a31,#075b83,#0d2447)"></span>Oceà</button>
+        <button class="wall-option" data-wall="sunset" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#20113d,#923f68,#ef986b)"></span>Posta de sol</button>
+        <button class="wall-option" data-wall="forest" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#071e1b,#0d5147,#152d3a)"></span>Bosc</button>
+        <button class="wall-option" data-wall="ice" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#dceeff,#7aa8d8,#243c75)"></span>Gel</button>
+        <button class="wall-option" data-wall="rose" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#281224,#773e67,#d28a9e)"></span>Rose</button>
+        <button class="wall-option" data-wall="mono" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#090b10,#303846,#080a0e)"></span>Monocrom</button>
+        <button class="wall-option" data-wall="desert" aria-pressed="false"><span class="wall-thumb" style="background:linear-gradient(135deg,#3c2330,#b96d53,#e8c08a)"></span>Desert</button>
+      </div>
+      <div class="panel-head" style="margin-top:22px"><h2>Color del vidre</h2><span class="subtle">Panells glass</span></div>
+      <div class="theme-grid" id="themeGrid">
+        <button class="swatch" style="--sw1:#50bfff;--sw2:#1957b8" data-accent="#50bfff" data-rgb="80,191,255" aria-label="Blau elèctric" title="Blau elèctric" aria-pressed="true"></button>
+        <button class="swatch" style="--sw1:#a78bfa;--sw2:#5b21b6" data-accent="#a78bfa" data-rgb="167,139,250" aria-label="Lila" title="Lila" aria-pressed="false"></button>
+        <button class="swatch" style="--sw1:#54e0bd;--sw2:#087f70" data-accent="#54e0bd" data-rgb="84,224,189" aria-label="Verd menta" title="Verd menta" aria-pressed="false"></button>
+        <button class="swatch" style="--sw1:#ff9fba;--sw2:#bd386d" data-accent="#ff9fba" data-rgb="255,159,186" aria-label="Rosa" title="Rosa" aria-pressed="false"></button>
+        <button class="swatch" style="--sw1:#ffc46b;--sw2:#b65d24" data-accent="#ffc46b" data-rgb="255,196,107" aria-label="Ambre" title="Ambre" aria-pressed="false"></button>
+        <button class="swatch" style="--sw1:#e7edf7;--sw2:#77859a" data-accent="#e7edf7" data-rgb="231,237,247" aria-label="Plata" title="Plata" aria-pressed="false"></button>
+        <button class="swatch" style="--sw1:#c4f06b;--sw2:#4c8319" data-accent="#c4f06b" data-rgb="196,240,107" aria-label="Llima" title="Llima" aria-pressed="false"></button>
+        <button class="swatch" style="--sw1:#ff6e6e;--sw2:#a51d45" data-accent="#ff6e6e" data-rgb="255,110,110" aria-label="Vermell" title="Vermell" aria-pressed="false"></button>
+      </div>
+      <div class="controls" style="margin-top:16px"><label class="subtle" for="glassLevel">Transparència</label><select id="glassLevel"><option value="0.28">Més transparent</option><option value="0.42" selected>Equilibrat</option><option value="0.62">Més opac</option></select></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Notes ràpides</h2><span class="subtle">Es desa al dispositiu</span></div>
+      <textarea class="note" id="notes" placeholder="Escriu una idea, una tasca o un recordatori..."></textarea>
+    </section>
+  </div>
+</section>
+<footer>NOVA GLASS · Fet per personalitzar el teu espai.</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+function tick(){const d=new Date();$('#clock').textContent=d.toLocaleDateString('ca-ES',{weekday:'long',day:'numeric',month:'long'})+' · '+d.toLocaleTimeString('ca-ES',{hour:'2-digit',minute:'2-digit'});}
+tick();setInterval(tick,15000);
+$('#searchForm').addEventListener('submit',e=>{e.preventDefault();const q=$('#searchInput').value.trim();if(q){const url=/^(https?:\/\/|[\w-]+\.[a-z]{2,})/i.test(q)?(q.startsWith('http')?q:'https://'+q):'https://www.google.com/search?q='+encodeURIComponent(q);location.href=url;}});
+const root=document.documentElement;
+document.querySelectorAll('.wall-option').forEach(btn=>btn.addEventListener('click',()=>{const wall=btn.dataset.wall;$('#wallpaper').dataset.wall=wall;document.querySelectorAll('.wall-option').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));try{localStorage.setItem('nova-wall',wall)}catch(e){}}));
+document.querySelectorAll('.swatch').forEach(btn=>btn.addEventListener('click',()=>{root.style.setProperty('--accent',btn.dataset.accent);root.style.setProperty('--accent-rgb',btn.dataset.rgb);document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));try{localStorage.setItem('nova-accent',btn.dataset.accent);localStorage.setItem('nova-rgb',btn.dataset.rgb)}catch(e){}}));
+$('#glassLevel').addEventListener('change',e=>{root.style.setProperty('--glass',`rgba(7,14,28,${e.target.value})`);try{localStorage.setItem('nova-glass',e.target.value)}catch(e){}});
+$('#settingsJump').addEventListener('click',()=>$('#appearance').scrollIntoView({behavior:'smooth',block:'center'}));
+try{
+ const wall=localStorage.getItem('nova-wall');if(wall){$('#wallpaper').dataset.wall=wall;document.querySelectorAll('.wall-option').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wall===wall)))}
+ const accent=localStorage.getItem('nova-accent'),rgb=localStorage.getItem('nova-rgb');if(accent&&rgb){root.style.setProperty('--accent',accent);root.style.setProperty('--accent-rgb',rgb);document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.accent===accent)))}
+ const glass=localStorage.getItem('nova-glass');if(glass){$('#glassLevel').value=glass;root.style.setProperty('--glass',`rgba(7,14,28,${glass})`)}
+ $('#notes').value=localStorage.getItem('nova-notes')||'';
+ $('#notes').addEventListener('input',()=>localStorage.setItem('nova-notes',$('#notes').value));
+}catch(e){}
+let installPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('#installBtn').hidden=false});
+$('#installBtn').addEventListener('click',async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('#installBtn').hidden=true});
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+</script>
+</body></html>

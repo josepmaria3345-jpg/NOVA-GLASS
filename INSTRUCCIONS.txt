@@ -1,0 +1,9 @@
+NOVA GLASS — versió PWA
+
+Aquesta carpeta conté la webapp preparada per publicar-se com a aplicació instal·lable.
+
+IMPORTANT:
+- Obrir index.html directament des de Descàrregues permet provar el disseny, però NO activa la instal·lació PWA.
+- Per instal·lar-la al prestatge de ChromeOS, cal publicar aquests fitxers en un allotjament HTTPS (per exemple, GitHub Pages).
+- Un cop publicada, obre la seva adreça HTTPS amb Chrome. Si Chrome ofereix «Instal·la NOVA» o «Instal·la pàgina com a aplicació», fes-ho i després fixa-la al prestatge.
+- El fitxer HTML es pot editar, però no és una app instal·lable mentre s'obri com a fitxer local.
